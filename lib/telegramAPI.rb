@@ -3,7 +3,7 @@ require 'json'
 require 'net/http'
 require 'net/https'
 require 'uri'
-require 'rest-client'
+require 'rest_client'
 require 'telegramObjects'
 
 # This library provides an easy way to access to the Telegram Bot API
