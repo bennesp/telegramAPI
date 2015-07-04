@@ -21,7 +21,6 @@ class TelegramAPI
     @last_update = 0
   end
 
-  private
   def query api, params={}
     p=[]
     params_s=""
@@ -31,7 +30,6 @@ class TelegramAPI
 
     JSON.parse(open(@@core+@token+"/"+api+params_s).read)
   end
-  public
 
   # Provide information about the bot itself
   # @return [User] Information about the bot
@@ -141,4 +139,6 @@ class TelegramAPI
   def getUserProfilePhotos id, options={}
     UserProfilePhotos.new self.query("getUserProfilePhotos", {"user_id"=>id}.merge(options))["result"]
   end
+
+  protected :query
 end
