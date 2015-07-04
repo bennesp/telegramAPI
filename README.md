@@ -35,7 +35,7 @@ puts "But you can call me @#{bot.username}"
 
 ## Documentation
 
-The complete documentation can be found at [www.rubydoc.info](https://cdn.rawgit.com/bennesp/telegramAPI/tree/master/doc/index.html)
+The complete documentation can be found at [doc](https://cdn.rawgit.com/bennesp/telegramAPI/master/doc/TelegramAPI.html)
 
 
 ## Examples
