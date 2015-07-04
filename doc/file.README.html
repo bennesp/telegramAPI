@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: README
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!file.README.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: README</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><div id='filecontents'>
+<h1 id="label-TelegramAPI">TelegramAPI</h1>
+
+<p>This is a simple and lightweight Ruby API for Telegram Bots.</p>
+
+<p>With this tiny library you can create awesome Telegram Bot!</p>
+
+<h2 id="label-Installation">Installation</h2>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_sudo'>sudo</span> <span class='id identifier rubyid_gem'>gem</span> <span class='id identifier rubyid_install'>install</span> <span class='id identifier rubyid_telegramAPI'>telegramAPI</span></code></pre>
+
+<h2 id="label-Use">Use</h2>
+
+<p>Import the library in your script with:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_require'>require</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>telegramAPI</span><span class='tstring_end'>&#39;</span></span>
+</code></pre>
+
+<p>Obtain a token, if you haven&#39;t yet, talking with <a
+href="https://telegram.me/botfather">@BotFather</a></p>
+
+<h2 id="label-Getting+Started">Getting Started</h2>
+
+<p>To test your access token, you can use the <em>getMe</em> method “`ruby
+require &#39;telegramAPI&#39;</p>
+
+<p>token = “******” api = TelegramAPI.new token bot = api.getMe puts “I&#39;m
+bot #botbot.first_name with id #botbot.id” puts “But you can call me
+@#botbot.username” “`</p>
+
+<h2 id="label-Documentation">Documentation</h2>
+
+<p>The complete documentation can be found at <a
+href="http://www.rubydoc.info/gems/telegramAPI/">www.rubydoc.info</a></p>
+
+<h2 id="label-Examples">Examples</h2>
+
+<h3 id="label-Echo+Server">Echo Server</h3>
+
+<pre class="code ruby"><code class="ruby">token = &quot;******&quot;
+api = TelegramAPI.new token
+while true do
+  # Get last messages if there are, or wait 180 seconds for new messages
+  u=api.getUpdates {timeout=&gt;180}
+  u.each do |m|
+    api.sendMessage(m.message.chat.id, m.message.text)
+  end
+end
+</code></pre>
+
+<h3 id="label-Send+Media">Send Media</h3>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_api'>api</span><span class='period'>.</span><span class='id identifier rubyid_sendSticker'>sendSticker</span> <span class='id identifier rubyid_m'>m</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='period'>.</span><span class='id identifier rubyid_chat'>chat</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='comma'>,</span> <span class='id identifier rubyid_sticker_id'>sticker_id</span>
+
+<span class='id identifier rubyid_api'>api</span><span class='period'>.</span><span class='id identifier rubyid_sendPhoto'>sendPhoto</span> <span class='id identifier rubyid_m'>m</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='period'>.</span><span class='id identifier rubyid_chat'>chat</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/home/path-of-image/image.jpg</span><span class='tstring_end'>&quot;</span></span>
+
+<span class='id identifier rubyid_api'>api</span><span class='period'>.</span><span class='id identifier rubyid_sendDocument'>sendDocument</span> <span class='id identifier rubyid_m'>m</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='period'>.</span><span class='id identifier rubyid_chat'>chat</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/home/path-of-document/doc.gif</span><span class='tstring_end'>&quot;</span></span>
+
+<span class='id identifier rubyid_api'>api</span><span class='period'>.</span><span class='id identifier rubyid_sendAudio'>sendAudio</span> <span class='id identifier rubyid_m'>m</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='period'>.</span><span class='id identifier rubyid_chat'>chat</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/home/path-of-audio/audio.opus</span><span class='tstring_end'>&quot;</span></span>
+
+<span class='id identifier rubyid_api'>api</span><span class='period'>.</span><span class='id identifier rubyid_sendVideo'>sendVideo</span> <span class='id identifier rubyid_m'>m</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='period'>.</span><span class='id identifier rubyid_chat'>chat</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/home/path-of-video/video.mp4</span><span class='tstring_end'>&quot;</span></span>
+
+<span class='id identifier rubyid_api'>api</span><span class='period'>.</span><span class='id identifier rubyid_sendLocation'>sendLocation</span> <span class='id identifier rubyid_m'>m</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='period'>.</span><span class='id identifier rubyid_chat'>chat</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='comma'>,</span> <span class='float'>45.462781</span><span class='comma'>,</span> <span class='float'>9.177732</span>
+</code></pre>
+
+<p><strong>Note:</strong> According to Telegram, each audio must be encoded in
+<strong>Ogg OPUS</strong>, and each video must be encoded in
+<strong>mp4</strong>.</p>
+</div></div>
+
+    <div id="footer">
+  Generated on Sat Jul  4 02:36:53 2015 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.1.2).
+</div>
+
+  </body>
+</html>
