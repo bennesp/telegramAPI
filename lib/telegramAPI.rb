@@ -21,6 +21,14 @@ class TelegramAPI
     @last_update = 0
   end
 
+  def parse_hash hash
+    ret = {}
+    hash.each do |h|
+      ret[h[0]]=h[1]
+    end
+    return ret
+  end
+
   def query api, params={}
     p=[]
     params_s=""
@@ -41,7 +49,7 @@ class TelegramAPI
   # @param options [Hash<String, String>] Optional settings
   # @return [Array<Update>] List of all updates
   def getUpdates options={"timeout"=>0, "limit"=>100}
-    r=self.query "getUpdates", {"offset"=>@last_update.to_s}.merge(options)
+    r=self.query "getUpdates", {"offset"=>@last_update.to_s}.merge(parse_hash(options))
     if r['ok']!=true then return nil end
     up=ArrayOf.new(r['result'],Update).to_a
     if up[-1]!=nil then @last_update=up[-1].update_id+1 end
@@ -57,10 +65,7 @@ class TelegramAPI
     if options.has_key?"reply_markup" then
       options["reply_markup"]=options["reply_markup"].to_json
     end
-    options_parsed = {}
-    options.each do |o| options_parsed[o[0]]=o[1] end
-
-    Message.new self.query("sendMessage", {"chat_id"=>to.to_s, "text"=>URI::encode(text)}.merge(options_parsed))["result"]
+    Message.new self.query("sendMessage", {"chat_id"=>to.to_s, "text"=>URI::encode(text)}.merge(parse_hash(options)))["result"]
   end
 
   # Send a message as forwarded
@@ -78,28 +83,28 @@ class TelegramAPI
   # @param options (see #sendMessage)
   # @return (see #sendMessage)
   def sendPhoto to, path, options={}
-    Message.new JSON.parse(RestClient.post(@@core+@token+"/sendPhoto", {:photo=>File.new(path,'rb'), :chat_id=>to.to_s}.merge(options)).body)["result"]
+    Message.new JSON.parse(RestClient.post(@@core+@token+"/sendPhoto", {:photo=>File.new(path,'rb'), :chat_id=>to.to_s}.merge(parse_hash(options))).body)["result"]
   end
 
   # Send an audio file in Ogg OPUS format of max 50MB
   # @param (see #sendPhoto)
   # @return (see #sendPhoto)
   def sendAudio to, path, options={}
-    Message.new JSON.parse(RestClient.post(@@core+@token+"/sendAudio", {:audio=>File.new(path, 'rb'), :chat_id=>to.to_s}.merge(options)).body)["result"]
+    Message.new JSON.parse(RestClient.post(@@core+@token+"/sendAudio", {:audio=>File.new(path, 'rb'), :chat_id=>to.to_s}.merge(parse_hash(options))).body)["result"]
   end
 
   # Send a general document (file, image, audio)
   # @param (see #sendPhoto)
   # @return (see #sendPhoto)
   def sendDocument to, path, options={}
-    Message.new JSON.parse(RestClient.post(@@core+@token+"/sendDocument", {:document=>File.new(path,'rb'), :chat_id=>to.to_s}.merge(options)).body)["result"]
+    Message.new JSON.parse(RestClient.post(@@core+@token+"/sendDocument", {:document=>File.new(path,'rb'), :chat_id=>to.to_s}.merge(parse_hash(options))).body)["result"]
   end
 
   # Send a Sticker from File
   # @param (see #sendPhoto)
   # @return (see #sendSticker)
   def sendStickerFromFile to, path, options={}
-    Message.new JSON.parse(RestClient.post(@@core+@token+"/sendStiker", {:sticker=>File.new(path,'rb'), :chat_id=>to.to_s}.merge(options)).body)["result"]
+    Message.new JSON.parse(RestClient.post(@@core+@token+"/sendStiker", {:sticker=>File.new(path,'rb'), :chat_id=>to.to_s}.merge(parse_hash(options))).body)["result"]
   end
 
   # Send a Sticker through its ID
@@ -108,14 +113,14 @@ class TelegramAPI
   # @param options (see #sendPhoto)
   # @return (see #sendPhoto)
   def sendSticker to, id, options={}
-    Message.new JSON.parse(RestClient.post(@@core+@token+"/sendSticker", {:sticker=>id, :chat_id=>to.to_s}.merge(options)).body)["result"]
+    Message.new JSON.parse(RestClient.post(@@core+@token+"/sendSticker", {:sticker=>id, :chat_id=>to.to_s}.merge(parse_hash(options))).body)["result"]
   end
 
   # Send a video file in mp4 format of max 50MB
   # @param (see #sendPhoto)
   # @return (see #sendPhoto)
   def sendVideo to, path, options={}
-    Message.new JSON.parse(RestClient.post(@@core+@token+"/sendVideo", {:video=>File.new(path,'rb'), :chat_id=>to.to_s}.merge(options)).body)["result"]
+    Message.new JSON.parse(RestClient.post(@@core+@token+"/sendVideo", {:video=>File.new(path,'rb'), :chat_id=>to.to_s}.merge(parse_hash(options))).body)["result"]
   end
   
   # Send a location
@@ -125,7 +130,7 @@ class TelegramAPI
   # @param options (see #sendPhoto)
   # @return (see #sendPhoto)
   def sendLocation to, lat, long, options={}
-    Message.new self.query("sendLocation", {"chat_id"=>to, "latitude"=>lat, "longitude"=>long}.merge(options))["result"]
+    Message.new self.query("sendLocation", {"chat_id"=>to, "latitude"=>lat, "longitude"=>long}.merge(parse_hash(options)))["result"]
   end
 
   # Send a Chat Action
@@ -140,8 +145,8 @@ class TelegramAPI
   # @param options (see #sendPhoto)
   # @return [UserProfilePhotos]
   def getUserProfilePhotos id, options={}
-    UserProfilePhotos.new self.query("getUserProfilePhotos", {"user_id"=>id}.merge(options))["result"]
+    UserProfilePhotos.new self.query("getUserProfilePhotos", {"user_id"=>id}.merge(parse_hash(options)))["result"]
   end
 
-  protected :query
+  protected :query, :parse_hash
 end
