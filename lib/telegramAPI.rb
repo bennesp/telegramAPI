@@ -23,8 +23,8 @@ class TelegramAPI
 
   def parse_hash hash
     ret = {}
-    hash.each do |h|
-      ret[h[0]]=URI::encode(h[1].to_s)
+    hash.map do |k,v|
+      ret[k]=URI::encode(v.to_s.gsub("\\\"", "\""))
     end
     return ret
   end
