@@ -4,7 +4,7 @@ require 'net/http'
 require 'net/https'
 require 'uri'
 require 'rest_client'
-require 'telegramObjects'
+require_relative './telegramObjects'
 
 # This library provides an easy way to access to the Telegram Bot API
 # Author:: Benedetto Nespoli
@@ -24,7 +24,7 @@ class TelegramAPI
   def parse_hash hash
     ret = {}
     hash.each do |h|
-      ret[h[0]]=URI::encode(h[1])
+      ret[h[0]]=URI::encode(h[1].to_s)
     end
     return ret
   end
