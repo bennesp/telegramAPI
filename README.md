@@ -4,7 +4,7 @@ This is a simple and lightweight Ruby API for Telegram Bots.
 
 With this tiny library you can create awesome Telegram Bot!
 
-Version: 1.0.4
+Version: 1.0.5
 
 ## Installation
 
