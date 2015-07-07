@@ -72,3 +72,20 @@ api.sendVideo m.message.chat.id, "/home/path-of-video/video.mp4"
 api.sendLocation m.message.chat.id, 45.462781, 9.177732
 ```
 **Note:** According to Telegram, each audio must be encoded in **Ogg OPUS**, and each video must be encoded in **mp4**.
+
+### Send Custom Keyboards
+
+You can find the complete list of options at the offical [Telegram API Bots](https://core.telegram.org/bots/api#replykeyboardhide) pge.
+
+```ruby
+markup = {
+  keyboard=>[["YES!", "Yes"], ["Well..", "No.."]],
+  # Other optional settings:
+  resize_keyboard=>true,
+  one_time_keyboard=>true,
+  selective=>true,
+  force_reply=>true
+}
+
+api.sendMessage m.message.chat.id, "Am I sexy?", {"reply_markup"=>markup}
+```
