@@ -2,6 +2,7 @@
 
 [![Gem Version](https://badge.fury.io/rb/telegramAPI.svg)](https://badge.fury.io/rb/telegramAPI)
 [![Dependency Status](https://gemnasium.com/bennesp/telegramAPI.svg)](https://gemnasium.com/bennesp/telegramAPI)
+[![Code Climate](https://codeclimate.com/github/bennesp/telegramAPI/badges/gpa.svg)](https://codeclimate.com/github/bennesp/telegramAPI)
 
 This is a simple and lightweight Ruby API for Telegram Bots.
 
