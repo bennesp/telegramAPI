@@ -1,10 +1,12 @@
 # TelegramAPI
 
+[![Gem Version](https://badge.fury.io/rb/telegramAPI.svg)](https://badge.fury.io/rb/telegramAPI)
+
 This is a simple and lightweight Ruby API for Telegram Bots.
 
 With this tiny library you can create awesome Telegram Bot!
 
-Version: 1.0.9
+Version: 1.0.10
 
 ## Installation
 
@@ -75,7 +77,7 @@ api.sendLocation m.message.chat.id, 45.462781, 9.177732
 
 ### Send Custom Keyboards
 
-You can find the complete list of options at the offical [Telegram API Bots](https://core.telegram.org/bots/api#replykeyboardhide) pge.
+You can find the complete list of options at the offical [Telegram API Bots](https://core.telegram.org/bots/api#replykeyboardhide) page.
 
 ```ruby
 markup = {
