@@ -39,6 +39,10 @@ class TelegramAPI
     JSON.parse(open(@@core+@token+"/"+api+params_s).read)
   end
 
+  def post api, name, path, to, options={}
+    Message.new JSON.parse(RestClient.post(@@core+@token+api, {name=>File.new(path,'rb'), :chat_id=>to.to_s}.merge(parse_hash(options))).body)["result"]
+  end
+
   # Provide information about the bot itself
   # @return [User] Information about the bot
   def getMe
@@ -83,28 +87,28 @@ class TelegramAPI
   # @param options (see #sendMessage)
   # @return (see #sendMessage)
   def sendPhoto to, path, options={}
-    Message.new JSON.parse(RestClient.post(@@core+@token+"/sendPhoto", {:photo=>File.new(path,'rb'), :chat_id=>to.to_s}.merge(parse_hash(options))).body)["result"]
+    self.post "/sendPhoto", :photo, path, to, options
   end
 
   # Send an audio file in Ogg OPUS format of max 50MB
   # @param (see #sendPhoto)
   # @return (see #sendPhoto)
   def sendAudio to, path, options={}
-    Message.new JSON.parse(RestClient.post(@@core+@token+"/sendAudio", {:audio=>File.new(path, 'rb'), :chat_id=>to.to_s}.merge(parse_hash(options))).body)["result"]
+    self.post "/sendAudio", :audio, path, to, options
   end
 
   # Send a general document (file, image, audio)
   # @param (see #sendPhoto)
   # @return (see #sendPhoto)
   def sendDocument to, path, options={}
-    Message.new JSON.parse(RestClient.post(@@core+@token+"/sendDocument", {:document=>File.new(path,'rb'), :chat_id=>to.to_s}.merge(parse_hash(options))).body)["result"]
+    self.post "/sendDocument", :document, path, to, options
   end
 
   # Send a Sticker from File
   # @param (see #sendPhoto)
   # @return (see #sendSticker)
   def sendStickerFromFile to, path, options={}
-    Message.new JSON.parse(RestClient.post(@@core+@token+"/sendStiker", {:sticker=>File.new(path,'rb'), :chat_id=>to.to_s}.merge(parse_hash(options))).body)["result"]
+    self.post "/sendSticker", :sticker, path, to, options
   end
 
   # Send a Sticker through its ID
@@ -120,7 +124,7 @@ class TelegramAPI
   # @param (see #sendPhoto)
   # @return (see #sendPhoto)
   def sendVideo to, path, options={}
-    Message.new JSON.parse(RestClient.post(@@core+@token+"/sendVideo", {:video=>File.new(path,'rb'), :chat_id=>to.to_s}.merge(parse_hash(options))).body)["result"]
+    self.post "/sendVideo", :video, path, to, options
   end
   
   # Send a location
@@ -148,5 +152,5 @@ class TelegramAPI
     UserProfilePhotos.new self.query("getUserProfilePhotos", {"user_id"=>id}.merge(parse_hash(options)))["result"]
   end
 
-  protected :query, :parse_hash
+  protected :query, :parse_hash, :post
 end

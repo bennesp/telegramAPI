@@ -1,12 +1,11 @@
 # TelegramAPI
 
 [![Gem Version](https://badge.fury.io/rb/telegramAPI.svg)](https://badge.fury.io/rb/telegramAPI)
+[![Dependency Status](https://gemnasium.com/bennesp/telegramAPI.svg)](https://gemnasium.com/bennesp/telegramAPI)
 
 This is a simple and lightweight Ruby API for Telegram Bots.
 
 With this tiny library you can create awesome Telegram Bot!
-
-Version: 1.0.10
 
 ## Installation
 

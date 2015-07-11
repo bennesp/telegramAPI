@@ -182,10 +182,6 @@ class ReplyKeyboardMarkup
     @one_time_keyboard = json["one_time_keyboard"]
     @selective = json["selective"]
   end
-
-  def to_json
-    "{\"keyboard\":" + @keyboard.to_json  + ", \"resize_keyboard\":" + (!@resize_keyboard ? "false" : "true") + ", \"one_time_keyboard\":" + (!@one_time_keyboard ? "false" : "true") + ", \"selective\":" + (!@selective ? "false" : "true") + "}"
-  end
 end
 
 class ReplyKeyboardHide
@@ -195,10 +191,6 @@ class ReplyKeyboardHide
     @hide_keyboard = json["hide_keyboard"]
     @selective = json["selective"]
   end
-
-  def to_json
-    "{\"hide_keyboard\":true, \"selective\":"+(!@selective ? "false" : "true")+"}"
-  end
 end
 
 class ForceReply
@@ -207,9 +199,5 @@ class ForceReply
     return if !json
     @force_reply = json["force_reply"]
     @selective = json["selective"]
-  end
-
-  def to_json
-    "{\"force_reply\":true, \"selective\":"+(!@selective ? "false" : "true")+"}"
   end
 end
