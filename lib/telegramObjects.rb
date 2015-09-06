@@ -155,7 +155,7 @@ class Location
   attr_accessor :latitude, :longitude
   def initialize json
     return if !json
-    @latitute = json["latitude"]
+    @latitude = json["latitude"]
     @longitude = json["longitude"]
   end
 end
