@@ -81,12 +81,13 @@ You can find the complete list of options at the offical [Telegram API Bots](htt
 
 ```ruby
 markup = {
-  keyboard=>[["YES!", "Yes"], ["Well..", "No.."]],
+  "keyboard"=>[["YES!", "Yes"], ["Well..", "No.."]],
   # Other optional settings:
-  resize_keyboard=>true,
-  one_time_keyboard=>true,
-  selective=>true,
-  force_reply=>true
+  "resize_keyboard"=>true,
+  "one_time_keyboard"=>true,
+  "selective"=>true,
+  "force_reply"=>true
+  # "hide_keyboard"=>true
 }
 
 api.sendMessage m.message.chat.id, "Am I sexy?", {"reply_markup"=>markup}
