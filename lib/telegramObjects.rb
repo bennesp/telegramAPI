@@ -168,7 +168,7 @@ class UserProfilePhotos
     @total_count = json["total_count"]
     @photos = []
     json["photos"].each do |p|
-      @photos<<ArrayOf.new(p).to_a
+      @photos<<ArrayOf.new(p, PhotoSize).to_a
     end
   end
 end
