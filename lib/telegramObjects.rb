@@ -48,7 +48,7 @@ end
 # Object describing a Message
 class Message
   attr_accessor :message_id, :from, :date, :chat, :forward_from, :forward_date,
-    :reply_to_message, :text, :audio, :document, :photo, :sticker, :video,
+    :reply_to_message, :text, :audio, :document, :photo, :voice, :sticker, :video,
     :contact, :location, :new_chat_participant, :left_chat_participant,
     :new_chat_title, :new_chat_photo, :delete_chat_photo, :group_chat_create
 
@@ -65,6 +65,7 @@ class Message
     @audio = Audio.new json["audio"]
     @document = Document.new json["document"]
     @photo = ArrayOf.new(json["photo"], PhotoSize).to_a
+    @voice = Voice.new json["voice"]
     @sticker = Sticker.new json["sticker"]
     @video = Video.new json["video"]
     @contact = Contact.new json["contact"]
@@ -108,6 +109,17 @@ class Document
     @file_id = json["file_id"]
     @thumb = PhotoSize.new json["thumb"]
     @file_name = json["file_name"]
+    @mime_type = json["mime_type"]
+    @file_size = json["file_size"]
+  end
+end
+
+class Voice
+  attr_accessor :file_id, :duration, :mime_type, :file_size
+  def initialize json
+    return if !json
+    @file_id = json["file_id"]
+    @duration = json["duration"]
     @mime_type = json["mime_type"]
     @file_size = json["file_size"]
   end
