@@ -1,10 +1,9 @@
-require 'open-uri'
 require 'json'
 require 'net/http'
 require 'net/https'
 require 'uri'
-require 'rest_client'
-require 'telegramObjects'
+require 'rest-client'
+require 'ostruct'
 
 # This library provides an easy way to access to the Telegram Bot API
 # Author:: Benedetto Nespoli
@@ -13,9 +12,6 @@ require 'telegramObjects'
 class TelegramAPI
   @@core = "https://api.telegram.org/bot"
 
-  # Create a new instance of TelegramAPI
-  #
-  # @param token [String] the access token, obtained thanks to {https://telegram.me/botfather @BotFather} on Telegram.
   def initialize token
     @token = token
     @last_update = 0
@@ -36,63 +32,39 @@ class TelegramAPI
     params.each do |param| p << param.join("=") end
     params_s = "?#{p.join("&")}" if p.length!=0
 
-    JSON.parse(open(@@core+@token+"/"+api+params_s).read)
+    JSON.parse(RestClient.get(@@core+@token+"/"+api+params_s).body)
   end
 
   def post api, name, path, to, options={}
-    Message.new JSON.parse(RestClient.post(@@core+@token+api, {name=>File.new(path,'rb'), :chat_id=>to.to_s}.merge(parse_hash(options))).body)["result"]
+    JSON.parse(RestClient.post(@@core+@token+api, {name=>File.new(path,'rb'), :chat_id=>to.to_s}.merge(parse_hash(options))).body, object_class: OpenStruct)["result"]
   end
 
-  # Provide information about the bot itself
-  # @return [User] Information about the bot
-  def getMe
-    User.new self.query("getMe")
-  end
-
-  # Get last updates, including last received messages
-  # @param options [Hash<String, String>] Optional settings
-  # @return [Array<Update>] List of all updates
   def getUpdates options={"timeout"=>0, "limit"=>100}
     r=self.query "getUpdates", {"offset"=>@last_update.to_s}.merge(parse_hash(options))
     if r['ok']!=true then return nil end
-    up=ArrayOf.new(r['result'],Update).to_a
-    if up[-1]!=nil then @last_update=up[-1].update_id+1 end
-    return up
+    if r['result'][-1]!=nil then @last_update=r['result'][-1]['update_id']+1 end
+    return r['result']
   end
 
-  # Send a message to the user with id +to+, with the text +text+
-  # @param to [Integer] chat_id to which send the message. Usually message.chat.id
-  # @param text [String] The text to send
-  # @param options (see #getUpdates)
-  # @return [Message] Message with the Photo sent
+  def getMe
+    self.query("getMe")
+  end
+
   def sendMessage to, text, options={}
     if options.has_key?"reply_markup" then
       options["reply_markup"]=options["reply_markup"].to_json
     end
-    Message.new self.query("sendMessage", {"chat_id"=>to.to_s, "text"=>URI::encode(text)}.merge(parse_hash(options)))["result"]
+    self.query("sendMessage", {"chat_id"=>to.to_s, "text"=>URI::encode(text)}.merge(parse_hash(options)))["result"]
   end
 
-  # Send a message as forwarded
-  # @param to (see #sendMessage)
-  # @param from [Integer] chat_id of the original message.
-  # @param msg [Integer] The message_id of the original message
-  # @return (see #sendPhoto)
   def forwardMessage to, from, msg
-    Message.new self.query("forwardMessage", {"chat_id"=>to, "from_chat_id"=>from, "message_id"=>msg})["result"]
+    self.query("forwardMessage", {"chat_id"=>to, "from_chat_id"=>from, "message_id"=>msg})["result"]
   end
 
-  # Send a local file containing a photo
-  # @param to (see #sendMessage)
-  # @param path [String] The path of the file to send
-  # @param options (see #sendMessage)
-  # @return (see #sendMessage)
   def sendPhoto to, path, options={}
     self.post "/sendPhoto", :photo, path, to, options
   end
 
-  # Send an audio file in Ogg OPUS format of max 50MB
-  # @param (see #sendPhoto)
-  # @return (see #sendPhoto)
   def sendAudio to, path, options={}
     self.post "/sendAudio", :audio, path, to, options
   end
@@ -117,7 +89,7 @@ class TelegramAPI
   # @param options (see #sendPhoto)
   # @return (see #sendPhoto)
   def sendSticker to, id, options={}
-    Message.new JSON.parse(RestClient.post(@@core+@token+"/sendSticker", {:sticker=>id, :chat_id=>to.to_s}.merge(parse_hash(options))).body)["result"]
+    JSON.parse(RestClient.post(@@core+@token+"/sendSticker", {:sticker=>id, :chat_id=>to.to_s}.merge(parse_hash(options))).body)["result"]
   end
 
   # Send a video file in mp4 format of max 50MB
@@ -134,7 +106,7 @@ class TelegramAPI
   # @param options (see #sendPhoto)
   # @return (see #sendPhoto)
   def sendLocation to, lat, long, options={}
-    Message.new self.query("sendLocation", {"chat_id"=>to, "latitude"=>lat, "longitude"=>long}.merge(parse_hash(options)))["result"]
+    self.query("sendLocation", {"chat_id"=>to, "latitude"=>lat, "longitude"=>long}.merge(parse_hash(options)))["result"]
   end
 
   # Send a Chat Action
@@ -149,7 +121,7 @@ class TelegramAPI
   # @param options (see #sendPhoto)
   # @return [UserProfilePhotos]
   def getUserProfilePhotos id, options={}
-    UserProfilePhotos.new self.query("getUserProfilePhotos", {"user_id"=>id}.merge(parse_hash(options)))["result"]
+    self.query("getUserProfilePhotos", {"user_id"=>id}.merge(parse_hash(options)))["result"]
   end
   
   # Kick the user user_id from the chat chat_id

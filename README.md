@@ -33,14 +33,13 @@ require 'telegramAPI'
 token = "******"
 api = TelegramAPI.new token
 bot = api.getMe
-puts "I'm bot #{bot.first_name} with id #{bot.id}"
-puts "But you can call me @#{bot.username}"
+puts "I'm bot #{bot['first_name']} with id #{bot['id']}"
+puts "But you can call me @#{bot['username']}"
 ```
 
 ## Documentation
 
-Here you can find the complete [documentation](https://cdn.rawgit.com/bennesp/telegramAPI/master/doc/TelegramAPI.html)
-
+Here you can use the Telegram official [documentation](https://core.telegram.org/bots/api#available-methods)
 
 ## Examples
 
@@ -53,7 +52,7 @@ while true do
   # Get last messages if there are, or wait 180 seconds for new messages
   u=api.getUpdates({"timeout"=>180})
   u.each do |m|
-    api.sendMessage(m.message.chat.id, m.message.text)
+    api.sendMessage(m['message']['chat']['id'], m['message']['text'])
   end
 end
 ```
@@ -90,5 +89,5 @@ markup = {
   # "hide_keyboard"=>true
 }
 
-api.sendMessage m.message.chat.id, "Am I sexy?", {"reply_markup"=>markup}
+api.sendMessage m['message']['chat']['id'], "Am I sexy?", {"reply_markup"=>markup}
 ```
