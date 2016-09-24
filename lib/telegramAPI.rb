@@ -3,7 +3,6 @@ require 'net/http'
 require 'net/https'
 require 'uri'
 require 'rest-client'
-require 'ostruct'
 
 # This library provides an easy way to access to the Telegram Bot API
 # Author:: Benedetto Nespoli
@@ -32,11 +31,11 @@ class TelegramAPI
     params.each do |param| p << param.join("=") end
     params_s = "?#{p.join("&")}" if p.length!=0
 
-    JSON.parse(RestClient.get(@@core+@token+"/"+api+params_s).body)
+    JSON.parse(RestClient.get(@@core+@token+"/"+api+params_s).body)["result"]
   end
 
   def post api, name, path, to, options={}
-    JSON.parse(RestClient.post(@@core+@token+api, {name=>File.new(path,'rb'), :chat_id=>to.to_s}.merge(parse_hash(options))).body, object_class: OpenStruct)["result"]
+    JSON.parse(RestClient.post(@@core+@token+api, {name=>File.new(path,'rb'), :chat_id=>to.to_s}.merge(parse_hash(options))).body)["result"]
   end
 
   def getUpdates options={"timeout"=>0, "limit"=>100}
@@ -54,11 +53,11 @@ class TelegramAPI
     if options.has_key?"reply_markup" then
       options["reply_markup"]=options["reply_markup"].to_json
     end
-    self.query("sendMessage", {"chat_id"=>to.to_s, "text"=>URI::encode(text)}.merge(parse_hash(options)))["result"]
+    self.query("sendMessage", {:chat_id=>to.to_s, :text=>URI::encode(text)}.merge(parse_hash(options)))
   end
 
   def forwardMessage to, from, msg
-    self.query("forwardMessage", {"chat_id"=>to, "from_chat_id"=>from, "message_id"=>msg})["result"]
+    self.query("forwardMessage", {:chat_id=>to, :from_chat_id=>from, :message_id=>msg})
   end
 
   def sendPhoto to, path, options={}
@@ -69,72 +68,77 @@ class TelegramAPI
     self.post "/sendAudio", :audio, path, to, options
   end
 
-  # Send a general document (file, image, audio)
-  # @param (see #sendPhoto)
-  # @return (see #sendPhoto)
   def sendDocument to, path, options={}
     self.post "/sendDocument", :document, path, to, options
   end
 
-  # Send a Sticker from File
-  # @param (see #sendPhoto)
-  # @return (see #sendSticker)
   def sendStickerFromFile to, path, options={}
     self.post "/sendSticker", :sticker, path, to, options
   end
 
-  # Send a Sticker through its ID
-  # @param to (see #sendPhoto)
-  # @param id [Integer] the ID of the sticker to send
-  # @param options (see #sendPhoto)
-  # @return (see #sendPhoto)
   def sendSticker to, id, options={}
-    JSON.parse(RestClient.post(@@core+@token+"/sendSticker", {:sticker=>id, :chat_id=>to.to_s}.merge(parse_hash(options))).body)["result"]
+    RestClient.post(@@core+@token+"/sendSticker", {:sticker=>id, :chat_id=>to.to_s}.merge(parse_hash(options))).body
   end
 
-  # Send a video file in mp4 format of max 50MB
-  # @param (see #sendPhoto)
-  # @return (see #sendPhoto)
   def sendVideo to, path, options={}
     self.post "/sendVideo", :video, path, to, options
   end
-  
-  # Send a location
-  # @param to (see #sendPhoto)
-  # @param lat [Float] Latitude
-  # @param long [Float] Longitude
-  # @param options (see #sendPhoto)
-  # @return (see #sendPhoto)
+
+  def sendVoice to, path, options={}
+    self.post "/sendVoice", :voice, path, to, options
+  end
+
   def sendLocation to, lat, long, options={}
-    self.query("sendLocation", {"chat_id"=>to, "latitude"=>lat, "longitude"=>long}.merge(parse_hash(options)))["result"]
+    self.query("sendLocation", {:chat_id=>to, :latitude=>lat, :longitude=>long}.merge(parse_hash(options)))
+  end
+  
+  def sendVenue to, lat, long, title, address, options={}
+    self.query("sendVenue", {:chat_id=>to, :latitude=>lat, :longitude=>long, :title=>title, :address=>address}.merge(parse_hash(options)))
+  end
+  
+  def sendContact to, phone_number, first_name, options={}
+    self.query("sendContact", {:chat_id=>to, :phone_number=>phone_number, :first_name=>first_name}.merge(parse_hash(options)))
   end
 
-  # Send a Chat Action
-  # @param to (see #sendPhoto)
-  # @param act [String] One of: typing, upload_photo, record_video, record_audio, upload_audio, upload_document, find_location
+  # act is one between: typing, upload_photo, record_video, record_audio, upload_audio, upload_document, find_location
   def sendChatAction to, act
-    self.query "sendChatAction", {"chat_id"=>to, "action"=>act}
+    self.query "sendChatAction", {:chat_id=>to, :action=>act}
   end
 
-  # Get a list of user profile photos, in up to 4 sizes each
-  # @param id [Integer] ID user whom getting the photos
-  # @param options (see #sendPhoto)
-  # @return [UserProfilePhotos]
   def getUserProfilePhotos id, options={}
-    self.query("getUserProfilePhotos", {"user_id"=>id}.merge(parse_hash(options)))["result"]
+    self.query("getUserProfilePhotos", {:user_id=>id}.merge(parse_hash(options)))
   end
   
-  # Kick the user user_id from the chat chat_id
-  # @param chat_id [Integer or String] ID of the chat, or @publicname
-  # @param user_id [Integer] ID of the user to kick
+  def getFile file_id
+    self.query("getFile", {:file_id=>file_id})
+  end
+  
   def kickChatMember chat_id, user_id
-    self.query "kickChatMember", {"chat_id"=>chat_id, "user_id"=>user_id}
+    self.query("kickChatMember", {:chat_id=>chat_id, :user_id=>user_id})
   end
   
-  # Unban user_id from chat_id
-  # see kickChatMember
+  def leaveChat chat_id
+    self.query("leaveChat", {:chat_id=>chat_id})
+  end
+  
   def unbanChatMember chat_id, user_id
-    self.query "unbanChatMember", {"chat_id"=>chat_id, "user_id"=>user_id}
+    self.query("unbanChatMember", {:chat_id=>chat_id, :user_id=>user_id})
+  end
+  
+  def getChat chat_id
+    self.query("getChat", {:chat_id=>chat_id})
+  end
+  
+  def getChatAdministrators chat_id
+    self.query("getChatAdministrators", {:chat_id=>chat_id})
+  end
+  
+  def getChatMembersCount chat_id
+    self.query("getChatMembersCount", {:chat_id=>chat_id})
+  end
+  
+  def getChatMember chat_id, user_id
+    self.query("getChatMember", {:chat_id=>chat_id, :user_id=>user_id})
   end
 
   protected :query, :parse_hash, :post
