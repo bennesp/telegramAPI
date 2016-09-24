@@ -33,8 +33,8 @@ class TelegramAPI
     p=[]
     params_s=""
 
-    params.each do |param| p<<param.join("=") end
-    params_s="?"+p.join("&") if p.length!=0
+    params.each do |param| p << param.join("=") end
+    params_s = "?#{p.join("&")}" if p.length!=0
 
     JSON.parse(open(@@core+@token+"/"+api+params_s).read)
   end
@@ -150,6 +150,19 @@ class TelegramAPI
   # @return [UserProfilePhotos]
   def getUserProfilePhotos id, options={}
     UserProfilePhotos.new self.query("getUserProfilePhotos", {"user_id"=>id}.merge(parse_hash(options)))["result"]
+  end
+  
+  # Kick the user user_id from the chat chat_id
+  # @param chat_id [Integer or String] ID of the chat, or @publicname
+  # @param user_id [Integer] ID of the user to kick
+  def kickChatMember chat_id, user_id
+    self.query "kickChatMember", {"chat_id"=>chat_id, "user_id"=>user_id}
+  end
+  
+  # Unban user_id from chat_id
+  # see kickChatMember
+  def unbanChatMember chat_id, user_id
+    self.query "unbanChatMember", {"chat_id"=>chat_id, "user_id"=>user_id}
   end
 
   protected :query, :parse_hash, :post
