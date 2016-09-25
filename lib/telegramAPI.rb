@@ -31,7 +31,10 @@ class TelegramAPI
     params.each do |param| p << param.join("=") end
     params_s = "?#{p.join("&")}" if p.length!=0
 
-    JSON.parse(RestClient.get(@@core+@token+"/"+api+params_s).body)["result"]
+    r = JSON.parse(RestClient.get(@@core+@token+"/"+api+params_s).body)
+    if r['ok']!=true then return nil end
+    if r['result'][-1]!=nil then @last_update=r['result'][-1]['update_id']+1 end
+    return r["result"]
   end
 
   def post api, name, path, to, options={}
@@ -39,10 +42,7 @@ class TelegramAPI
   end
 
   def getUpdates options={"timeout"=>0, "limit"=>100}
-    r=self.query "getUpdates", {"offset"=>@last_update.to_s}.merge(parse_hash(options))
-    if r['ok']!=true then return nil end
-    if r['result'][-1]!=nil then @last_update=r['result'][-1]['update_id']+1 end
-    return r['result']
+    self.query "getUpdates", {"offset"=>@last_update.to_s}.merge(parse_hash(options))
   end
 
   def getMe
