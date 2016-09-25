@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name	= 'telegramAPI'
-  s.version	= '1.2.1'
+  s.version	= '1.2.2'
   s.date	= '2016-09-25'
   s.summary	= "Telegram API Wrapper for Bots"
   s.description	= "A lightweight wrapper in Ruby for Telegram API Bots"
