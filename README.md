@@ -98,6 +98,7 @@ You can use the Telegram official [documentation](https://core.telegram.org/bots
 Every method has a optional parameter. See the Send Custom Keyboard example for more.
 
  * ```getUpdates()```
+ * ```setWebhook(url)```
  * ```getMe()```
  * ```sendMessage(chat_id, text)```
  * ```forwardMessage(chat_id, from_chat_id, message_id)```
