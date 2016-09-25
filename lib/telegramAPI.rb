@@ -32,17 +32,20 @@ class TelegramAPI
     params_s = "?#{p.join("&")}" if p.length!=0
 
     r = JSON.parse(RestClient.get(@@core+@token+"/"+api+params_s).body)
-    if r['ok']!=true then return nil end
-    if r['result'][-1]!=nil then @last_update=r['result'][-1]['update_id']+1 end
+    if r['result'].class==Array and r['result'][-1]!=nil then @last_update=r['result'][-1]['update_id']+1 end
     return r["result"]
   end
 
   def post api, name, path, to, options={}
     JSON.parse(RestClient.post(@@core+@token+api, {name=>File.new(path,'rb'), :chat_id=>to.to_s}.merge(parse_hash(options))).body)["result"]
   end
+  
+  def setWebhook url
+    self.query("setWebhook", {"url"=>URI::encode(url)})
+  end
 
   def getUpdates options={"timeout"=>0, "limit"=>100}
-    self.query "getUpdates", {"offset"=>@last_update.to_s}.merge(parse_hash(options))
+    self.query("getUpdates", {"offset"=>@last_update.to_s}.merge(parse_hash(options)))
   end
 
   def getMe
@@ -61,19 +64,19 @@ class TelegramAPI
   end
 
   def sendPhoto to, path, options={}
-    self.post "/sendPhoto", :photo, path, to, options
+    self.post("/sendPhoto", :photo, path, to, options)
   end
 
   def sendAudio to, path, options={}
-    self.post "/sendAudio", :audio, path, to, options
+    self.post("/sendAudio", :audio, path, to, options)
   end
 
   def sendDocument to, path, options={}
-    self.post "/sendDocument", :document, path, to, options
+    self.post("/sendDocument", :document, path, to, options)
   end
 
   def sendStickerFromFile to, path, options={}
-    self.post "/sendSticker", :sticker, path, to, options
+    self.post("/sendSticker", :sticker, path, to, options)
   end
 
   def sendSticker to, id, options={}
@@ -81,11 +84,11 @@ class TelegramAPI
   end
 
   def sendVideo to, path, options={}
-    self.post "/sendVideo", :video, path, to, options
+    self.post("/sendVideo", :video, path, to, options)
   end
 
   def sendVoice to, path, options={}
-    self.post "/sendVoice", :voice, path, to, options
+    self.post("/sendVoice", :voice, path, to, options)
   end
 
   def sendLocation to, lat, long, options={}
@@ -102,7 +105,7 @@ class TelegramAPI
 
   # act is one between: typing, upload_photo, record_video, record_audio, upload_audio, upload_document, find_location
   def sendChatAction to, act
-    self.query "sendChatAction", {:chat_id=>to, :action=>act}
+    self.query("sendChatAction", {:chat_id=>to, :action=>act})
   end
 
   def getUserProfilePhotos id, options={}

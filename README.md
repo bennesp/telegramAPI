@@ -31,11 +31,63 @@ To test your access token, you can use the *getMe* method
 require 'telegramAPI'
 
 token = "******"
-api = TelegramAPI.new token
-bot = api.getMe
+api = TelegramAPI.new(token)
+bot = api.getMe()
 puts "I'm bot #{bot['first_name']} with id #{bot['id']}"
 puts "But you can call me @#{bot['username']}"
 ```
+
+## Getting Updates
+
+There are two ways of getting updates from Telegram.
+The first one is the simpliest, but less powerful: **getUpdates**
+
+### 1. getUpdates
+
+```ruby
+require 'telegramAPI'
+
+token = "******"
+api = TelegramAPI.new(token)
+while true do
+  updates = api.getUpdates({"timeout"=>180})
+  updates.each do |update|
+    usr = update['message']['chat']['username'] || "unknown"
+    puts "Received update from @#{usr}"
+  end
+end
+```
+
+### 2. setWebhook
+
+Using setWebhook is not so complicated, but you need a web server with https support enabled (for example: Openshift or Heroku)
+
+In the example below I will use Sinatra framework for the Web Server.
+
+```ruby
+require 'telegramAPI'
+require 'sinatra'
+require 'json'
+
+token = "******"
+api = TelegramAPI.new token
+
+post "/#{token}" do
+  status 200
+  # Get Telegram Data
+  request.body.rewind
+  data = JSON.parse(request.body.read)
+  
+  # Output data on stdout
+  p data
+  # Return an empty json, to say "ok" to Telegram
+  "{}"
+end
+
+r = api.setWebhook("https://bennes-bennes.c9users.io/#{token}").to_json
+puts "setWebhook Result: #{r}" 
+```
+
 
 ## Documentation
 
