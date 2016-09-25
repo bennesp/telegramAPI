@@ -84,7 +84,7 @@ post "/#{token}" do
   "{}"
 end
 
-r = api.setWebhook("https://bennes-bennes.c9users.io/#{token}").to_json
+r = api.setWebhook("https://YOUR_URL/#{token}").to_json
 puts "setWebhook Result: #{r}" 
 ```
 
