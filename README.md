@@ -91,9 +91,9 @@ puts "setWebhook Result: #{r}"
 
 ## Documentation
 
-Here you can use the Telegram official [documentation](https://core.telegram.org/bots/api#available-methods)
+You can use the Telegram official [documentation](https://core.telegram.org/bots/api#available-methods)
 
-## List of methods available
+## List of available methods
 
 Every method has a optional parameter. See the Send Custom Keyboard example for more.
 
