@@ -25,13 +25,7 @@ class TelegramAPI
   end
 
   def query api, params={}
-    p=[]
-    params_s=""
-
-    params.each do |param| p << param.join("=") end
-    params_s = "?#{p.join("&")}" if p.length!=0
-
-    r = JSON.parse(RestClient.get(@@core+@token+"/"+api+params_s).body)
+    r = JSON.parse(RestClient.post(@@core+@token+"/"+api, params).body)
     if r['result'].class==Array and r['result'][-1]!=nil then @last_update=r['result'][-1]['update_id']+1 end
     return r["result"]
   end
@@ -56,7 +50,7 @@ class TelegramAPI
     if options.has_key?"reply_markup" then
       options["reply_markup"]=options["reply_markup"].to_json
     end
-    self.query("sendMessage", {:chat_id=>to.to_s, :text=>URI::encode(text)}.merge(parse_hash(options)))
+    self.query("sendMessage", {:chat_id=>to.to_s, :text=>text}.merge(parse_hash(options)))
   end
 
   def forwardMessage to, from, msg
