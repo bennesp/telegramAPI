@@ -137,6 +137,10 @@ class TelegramAPI
   def getChatMember chat_id, user_id
     self.query("getChatMember", {:chat_id=>chat_id, :user_id=>user_id})
   end
+  
+  def answerInlineQuery inline_query_id, results
+    self.query("answerInlineQuery", {:inline_query_id=>inline_query_id, :results=>JSON.dump(results)})
+  end
 
   protected :query, :parse_hash, :post
 end

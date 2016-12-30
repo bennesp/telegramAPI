@@ -174,3 +174,32 @@ markup = {
 api.sendMessage m['message']['chat']['id'], "Am I sexy?", {"reply_markup"=>markup}
 ```
 
+### Answer to inline query
+
+```ruby
+while true do
+  updates = api.getUpdates({:timeout=>180})
+  updates.each do |u|
+    if(u['inline_query']!=nil) then
+      r = api.answerInlineQuery(u['inline_query']['id'], [
+        {
+          :type=>'article',
+          :id=>"1",
+          :title=>"Test 1",
+          :input_message_content=>{:message_text=>"test content 1"}
+        },{
+          :type=>'article',
+          :id=>"2",
+          :title=>"Test 2",
+          :input_message_content=>{:message_text=>"test content 2"}
+        },{
+          :type=>'article',
+          :id=>"3",
+          :title=>"Test 3",
+          :input_message_content=>{:message_text=>"test content 3"}
+        }
+      ])
+    end
+  end
+end
+```
