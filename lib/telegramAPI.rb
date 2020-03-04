@@ -50,7 +50,7 @@ class TelegramAPI
     if options.has_key?"reply_markup" then
       options["reply_markup"]=options["reply_markup"].to_json
     end
-    self.query("sendMessage", {:chat_id=>to.to_s, :text=>text}.merge(parse_hash(options)))
+    self.query("sendMessage", {:chat_id=>to.to_s, :text=>text}.merge(options))
   end
 
   def forwardMessage to, from, msg
