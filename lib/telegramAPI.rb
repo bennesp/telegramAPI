@@ -19,7 +19,7 @@ class TelegramAPI
   def parse_hash hash
     ret = {}
     hash.map do |k,v|
-      ret[k]=URI::encode(v.to_s.gsub("\\\"", "\""))
+      ret[k]=URI::encode_www_form([v.to_s.gsub("\\\"", "\"")])
     end
     return ret
   end
@@ -31,11 +31,12 @@ class TelegramAPI
   end
 
   def post api, name, path, to, options={}
-    JSON.parse(RestClient.post(@@core+@token+api, {name=>File.new(path,'rb'), :chat_id=>to.to_s}.merge(parse_hash(options))).body)["result"]
+    file = path.start_with?('http') ? path : File.new(path,'rb')
+    JSON.parse(RestClient.post(@@core+@token+api, {name=>file, :chat_id=>to.to_s}.merge(parse_hash(options))).body)["result"]
   end
   
   def setWebhook url
-    self.query("setWebhook", {"url"=>URI::encode(url)})
+    self.query("setWebhook", {"url"=>URI::encode_www_form([url])})
   end
 
   def getUpdates options={"timeout"=>0, "limit"=>100}
